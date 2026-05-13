@@ -17,36 +17,40 @@ document.addEventListener('DOMContentLoaded', () => {
   initLightbox();
 });
 
-// ---- LIGHTBOX ----
+// ---- FOTO SLIDER ----
 function initLightbox() {
-  const items = Array.from(document.querySelectorAll('.realisatie-item img'));
-  const lb    = document.getElementById('lightbox');
-  const lbImg = document.getElementById('lbImg');
-  let current = 0;
+  const imgs    = Array.from(document.querySelectorAll('.slider-img'));
+  const thumbs  = Array.from(document.querySelectorAll('.thumb'));
+  const counter = document.getElementById('sliderCounter');
+  if (!imgs.length) return;
+  let cur = 0;
 
-  function open(i) {
-    current = i;
-    lbImg.src = items[i].src;
-    lb.classList.add('open');
-    document.body.style.overflow = 'hidden';
+  function goTo(i) {
+    imgs[cur].classList.remove('active');
+    thumbs[cur].classList.remove('active');
+    cur = (i + imgs.length) % imgs.length;
+    imgs[cur].classList.add('active');
+    thumbs[cur].classList.add('active');
+    thumbs[cur].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    if (counter) counter.textContent = `${cur + 1} / ${imgs.length}`;
   }
-  function close() {
-    lb.classList.remove('open');
-    document.body.style.overflow = '';
-  }
-  function prev() { open((current - 1 + items.length) % items.length); }
-  function next() { open((current + 1) % items.length); }
 
-  items.forEach((img, i) => img.parentElement.addEventListener('click', () => open(i)));
-  document.getElementById('lbClose').addEventListener('click', close);
-  document.getElementById('lbPrev').addEventListener('click', prev);
-  document.getElementById('lbNext').addEventListener('click', next);
-  lb.addEventListener('click', e => { if (e.target === lb) close(); });
+  document.getElementById('sliderPrev')?.addEventListener('click', () => goTo(cur - 1));
+  document.getElementById('sliderNext')?.addEventListener('click', () => goTo(cur + 1));
+  thumbs.forEach((t, i) => t.addEventListener('click', () => goTo(i)));
+
+  // Swipe support
+  let startX = 0;
+  const stage = document.getElementById('sliderStage');
+  stage?.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+  stage?.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 40) goTo(dx < 0 ? cur + 1 : cur - 1);
+  });
+
   document.addEventListener('keydown', e => {
-    if (!lb.classList.contains('open')) return;
-    if (e.key === 'ArrowLeft')  prev();
-    if (e.key === 'ArrowRight') next();
-    if (e.key === 'Escape')     close();
+    if (e.key === 'ArrowLeft')  goTo(cur - 1);
+    if (e.key === 'ArrowRight') goTo(cur + 1);
   });
 }
 
