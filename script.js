@@ -35,6 +35,27 @@ function initLightbox() {
     if (counter) counter.textContent = `${cur + 1} / ${imgs.length}`;
   }
 
+  // Lightbox on click
+  const lb    = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lbImg');
+  document.getElementById('sliderStage')?.addEventListener('click', e => {
+    if (e.target.classList.contains('slider-img')) {
+      lbImg.src = imgs[cur].src;
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+  });
+  document.getElementById('lbClose')?.addEventListener('click', () => {
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+  lb?.addEventListener('click', e => {
+    if (e.target === lb || e.target === lbImg) {
+      lb.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  });
+
   document.getElementById('sliderPrev')?.addEventListener('click', () => goTo(cur - 1));
   document.getElementById('sliderNext')?.addEventListener('click', () => goTo(cur + 1));
   thumbs.forEach((t, i) => t.addEventListener('click', () => goTo(i)));

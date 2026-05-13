@@ -707,6 +707,41 @@ button { font-size: inherit; }
 }
 .thumb.active, .thumb:hover { opacity: 1; border-color: var(--orange); }
 
+.slider-stage { cursor: zoom-in; }
+
+/* Lightbox */
+.lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.93);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+.lightbox.open { display: flex; }
+.lightbox img {
+  max-width: 92vw;
+  max-height: 92vh;
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 60px rgba(0,0,0,.6);
+  cursor: zoom-out;
+}
+.lightbox-close {
+  position: absolute;
+  top: 18px; right: 22px;
+  color: white;
+  font-size: 1.8rem;
+  cursor: pointer;
+  background: rgba(255,255,255,.12);
+  border: none;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s;
+}
+.lightbox-close:hover { background: var(--orange); }
+
 @media (max-width: 600px) {
   .slider-btn { width: 38px; height: 38px; font-size: .9rem; }
   .thumb { width: 56px; height: 42px; }
